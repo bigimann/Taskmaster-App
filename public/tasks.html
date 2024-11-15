@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Management | TaskMaster</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Tasks</h1>
+
+    <form id="task-form">
+      <input type="text" id="title" placeholder="Task Title" required />
+      <textarea id="description" placeholder="Description"></textarea>
+      <input type="date" id="deadline" required />
+      <select id="priority">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+      <button type="submit">Add Task</button>
+    </form>
+
+    <div id="tasks-container"></div>
+    <button onclick="logout()">Logout</button>
+    <script src="main.js"></script>
+
+    <select id="filter-priority">
+      <option value="">Filter by Priority</option>
+      <option value="low">Low</option>
+      <option value="medium">Medium</option>
+      <option value="high">High</option>
+    </select>
+
+    <input type="date" id="filter-due-date" placeholder="Filter by Due Date" />
+
+    <input
+      type="text"
+      id="search-term"
+      placeholder="Search by Title or Description"
+    />
+    <button onclick="applyFilters()">Apply Filters</button>
+    <button onclick="searchTasks()">Search</button>
+
+    <div id="tasks-container"></div>
+  </body>
+</html>
