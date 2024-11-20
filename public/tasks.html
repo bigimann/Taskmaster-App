@@ -4,44 +4,96 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Task Management | TaskMaster</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="css/tasks.css" />
   </head>
   <body>
-    <h1>Tasks</h1>
+    <header class="header-mobile">
+      <h1><span style="color: green">TASK</span> MASTER</h1>
+      <div class="header-n">
+        <button class="btn2" onclick="showModal('add-task-modal')">
+          <img src="images/add.webp" alt="addTask" width="40" height="30" />
+        </button>
+        <button class="btn2" onclick="showModal('display-tasks-modal')">
+          <img
+            src="images/search.png"
+            alt="searchTasks"
+            width="20"
+            height="10"
+          />
+        </button>
+        <button class="btn" onclick="logout()">Logout</button>
+      </div>
+    </header>
 
-    <form id="task-form">
-      <input type="text" id="title" placeholder="Task Title" required />
-      <textarea id="description" placeholder="Description"></textarea>
-      <input type="date" id="deadline" required />
-      <select id="priority">
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
-      <button type="submit">Add Task</button>
-    </form>
+    <header class="header-desktop">
+      <h1><span style="color: green">TASK</span> MASTER</h1>
+    </header>
+
+    <nav class="header-nav">
+      <button class="btn2" onclick="showModal('add-task-modal')">
+        Add Task
+      </button>
+      <button class="btn2" onclick="showModal('display-tasks-modal')">
+        Search Tasks
+      </button>
+      <button class="btn" onclick="logout()">Logout</button>
+    </nav>
 
     <div id="tasks-container"></div>
-    <button onclick="logout()">Logout</button>
+
+    <!-- Add Task Modal -->
+    <div id="add-task-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('add-task-modal')"
+          >&times;</span
+        >
+        <h2>Add Task</h2>
+        <form id="task-form">
+          <input type="text" id="title" placeholder="Task Title" required />
+          <textarea id="description" placeholder="Description"></textarea>
+          <input type="date" id="deadline" required />
+          <select id="priority">
+            <option value="">Click to set priority</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+          <button type="submit">Add Task</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Display Tasks Modal -->
+    <div id="display-tasks-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('display-tasks-modal')"
+          >&times;</span
+        >
+        <h2>Tasks</h2>
+        <div id="tasks-container"></div>
+        <div class="filters">
+          <select id="filter-priority">
+            <option value="">Filter by Priority</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+          <input
+            type="date"
+            id="filter-due-date"
+            placeholder="Filter by Due Date"
+          />
+          <input
+            type="text"
+            id="search-term"
+            placeholder="Search by Title or Description"
+          />
+          <button onclick="applyFilters()">Apply Filters</button>
+          <button onclick="searchTasks()">Search</button>
+        </div>
+      </div>
+    </div>
+
     <script src="main.js"></script>
-
-    <select id="filter-priority">
-      <option value="">Filter by Priority</option>
-      <option value="low">Low</option>
-      <option value="medium">Medium</option>
-      <option value="high">High</option>
-    </select>
-
-    <input type="date" id="filter-due-date" placeholder="Filter by Due Date" />
-
-    <input
-      type="text"
-      id="search-term"
-      placeholder="Search by Title or Description"
-    />
-    <button onclick="applyFilters()">Apply Filters</button>
-    <button onclick="searchTasks()">Search</button>
-
-    <div id="tasks-container"></div>
   </body>
 </html>

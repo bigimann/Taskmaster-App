@@ -1,5 +1,15 @@
 const apiUrl = "http://localhost:5000";
 
+// Show Modal
+function showModal(modalId) {
+  document.getElementById(modalId).style.display = "block";
+}
+
+// Close Modal
+function closeModal(modalId) {
+  document.getElementById(modalId).style.display = "none";
+}
+
 // Register User
 document
   .getElementById("register-form")
@@ -50,6 +60,12 @@ document.getElementById("login-form")?.addEventListener("submit", async (e) => {
   }
 });
 
+// Logout
+function logout() {
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
+}
+
 // Load Tasks
 async function loadTasks() {
   try {
@@ -67,12 +83,74 @@ async function loadTasks() {
 // Display Tasks
 function displayTasks(tasks) {
   const container = document.getElementById("tasks-container");
-  container.innerHTML = "";
-  tasks.forEach((task) => {
+  container.innerHTML = ""; // Clear the container before rendering
+
+  tasks.forEach((task, index) => {
     const taskElem = document.createElement("div");
-    taskElem.textContent = `${task.title} - ${task.priority}`;
+    taskElem.className = "task-card";
+    taskElem.innerHTML = `
+      <h3>${index + 1}. ${task.title}</h3>
+      <p>${task.description}</p>
+      <p><strong>Deadline:</strong> ${new Date(
+        task.deadline
+      ).toLocaleDateString()}</p>
+      <p><strong>Priority:</strong> ${task.priority}</p>
+      <button onclick="updateTask('${task._id}')">Update</button>
+      <button onclick="deleteTask('${task._id}')">Delete</button>
+    `;
     container.appendChild(taskElem);
   });
+}
+
+//delete task
+async function deleteTask(taskId) {
+  const token = localStorage.getItem("token");
+
+  try {
+    await fetch(`${apiUrl}/tasks/${taskId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    loadTasks(); // Reload tasks after deletion
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+//update task
+async function updateTask(taskId) {
+  const token = localStorage.getItem("token");
+  const updatedTitle = prompt("Enter updated title:");
+  const updatedDescription = prompt("Enter updated description:");
+  const updatedDeadline = prompt("Enter updated deadline (YYYY-MM-DD):");
+  const updatedPriority = prompt("Enter updated priority (low, medium, high):");
+
+  if (!updatedTitle || !updatedDeadline || !updatedPriority) {
+    alert("All fields are required!");
+    return;
+  }
+
+  try {
+    await fetch(`${apiUrl}/tasks/${taskId}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: updatedTitle,
+        description: updatedDescription,
+        deadline: updatedDeadline,
+        priority: updatedPriority,
+      }),
+    });
+    loadTasks(); // Reload tasks after update
+  } catch (error) {
+    console.error("Error:", error);
+  }
 }
 
 // Add New Task
@@ -93,22 +171,13 @@ document.getElementById("task-form")?.addEventListener("submit", async (e) => {
       },
       body: JSON.stringify({ title, description, deadline, priority }),
     });
+    closeModal("add-task-modal"); // Close modal after submission
+    alert(`Task added succesfully`);
     loadTasks(); // Refresh task list
   } catch (error) {
     console.error("Error:", error);
   }
 });
-
-// Logout
-function logout() {
-  localStorage.removeItem("token");
-  window.location.href = "login.html";
-}
-
-// Load tasks on tasks.html page load
-if (window.location.pathname === "/tasks.html") {
-  loadTasks();
-}
 
 // Filter Tasks by Priority and Due Date
 async function applyFilters() {
@@ -145,4 +214,9 @@ async function searchTasks() {
   } catch (error) {
     console.error("Error:", error);
   }
+}
+
+// Load tasks on tasks.html page load
+if (window.location.pathname === "/tasks.html") {
+  loadTasks();
 }

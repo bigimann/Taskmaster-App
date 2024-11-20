@@ -37,37 +37,57 @@ exports.login = async (req, res) => {
 
 exports.requestPasswordReset = async (req, res) => {
   const { email } = req.body;
+
   try {
+    // Find the user in the database
     const user = await User.findOne({ email });
     if (!user) return res.status(404).send("User not found");
 
-    // Create reset token
+    // Generate reset token with a 1-hour expiration
     const resetToken = jwt.sign(
       { id: user._id },
       process.env.JWT_RESET_SECRET,
       { expiresIn: "1h" }
     );
 
-    // Send reset email
+    // Construct reset link dynamically based on BASE_URL
+    const resetLink = `${process.env.BASE_URL}/reset-password/${resetToken}`;
+
+    // Configure the email transporter
     const transporter = nodemailer.createTransport({
-      service: process.env.EMAIL_SERVICE,
+      service: process.env.EMAIL_SERVICE, // e.g., "gmail"
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.EMAIL_USER, // Your email address
+        pass: process.env.EMAIL_PASS, // Your email password or app-specific password
       },
     });
 
-    const resetLink = `http://localhost:5000/reset-password/${resetToken}`;
+    // Email content
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: `"Support Team" <${process.env.EMAIL_USER}>`,
       to: user.email,
       subject: "Password Reset Request",
-      text: `Click the link to reset your password: ${resetLink}`,
+      text: `Hello ${
+        user.name || "User"
+      },\n\nClick the link below to reset your password:\n\n${resetLink}\n\nThis link will expire in 1 hour. If you did not request this, please ignore this email.`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+          <h2 style="text-align: center; color: #4CAF50;">Password Reset Request</h2>
+          <p>Hello ${user.name || "User"},</p>
+          <p>Click the link below to reset your password:</p>
+          <a href="${resetLink}" style="display: inline-block; padding: 10px 20px; margin: 20px 0; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
+          <p>This link will expire in 1 hour. If you did not request this, please ignore this email.</p>
+          <p>Best Regards,<br>Your Support Team</p>
+        </div>
+      `,
     };
 
+    // Send email
     await transporter.sendMail(mailOptions);
+
     res.status(200).send("Password reset link sent to your email.");
   } catch (error) {
+    console.error("Error sending password reset email:", error);
     res.status(500).send("Error in password reset request");
   }
 };
@@ -89,21 +109,3 @@ exports.resetPassword = async (req, res) => {
     res.status(400).send("Invalid or expired token");
   }
 };
-
-// TRANSPORTER
-
-const transporter = require("../config/emailConfig"); // Adjust the path as needed
-
-const mailOptions = {
-  from: "your_email@example.com", // From address
-  to: "recipient@example.com", // This email will show in Mailtrap, not delivered
-  subject: "Test Email from Nodemailer with Mailtrap",
-  text: "This is a test email sent using Mailtrap with Nodemailer!",
-};
-
-transporter.sendMail(mailOptions, (error, info) => {
-  if (error) {
-    return console.log("Error:", error);
-  }
-  console.log("Email sent:", info.messageId);
-});
