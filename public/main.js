@@ -100,6 +100,7 @@ function displayTasks(tasks) {
     `;
     container.appendChild(taskElem);
   });
+  closeModal(modalId);
 }
 
 //delete task
