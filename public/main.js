@@ -137,42 +137,12 @@ async function deleteTask(taskId) {
   }
 }
 
-//update task
-// Show update modal and populate with existing task details
-async function updateTask(taskId) {
-  const token = localStorage.getItem("token");
-
-  try {
-    // Fetch existing task details
-    const response = await fetch(`${apiUrl}/tasks/${taskId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const task = await response.json();
-
-    // Populate the form with current task details
-    document.getElementById("update-task-id").value = taskId;
-    document.getElementById("update-title").value = task.title || "";
-    document.getElementById("update-description").value =
-      task.description || "";
-    document.getElementById("update-deadline").value = task.deadline || "";
-    document.getElementById("update-priority").value = task.priority || "";
-
-    // Show the modal
-    document.getElementById("update-task-modal").style.display = "block";
-  } catch (error) {
-    console.error("Error fetching task details:", error);
-    alert("Failed to fetch task details. Please try again.");
-  }
-}
-
-// Handle update form submission
 document
   .getElementById("update-task-form")
   .addEventListener("submit", async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
 
-    // Collect updated values
     const taskId = document.getElementById("update-task-id").value;
     const updatedTitle = document.getElementById("update-title").value.trim();
     const updatedDescription = document
@@ -185,21 +155,18 @@ document
       .getElementById("update-priority")
       .value.trim();
 
-    // Create an update object with only the fields the user filled out
     const updateData = {};
     if (updatedTitle) updateData.title = updatedTitle;
     if (updatedDescription) updateData.description = updatedDescription;
     if (updatedDeadline) updateData.deadline = updatedDeadline;
     if (updatedPriority) updateData.priority = updatedPriority;
 
-    // Check if at least one field is being updated
     if (Object.keys(updateData).length === 0) {
       alert("No fields to update. Please fill out at least one field.");
       return;
     }
 
     try {
-      // Send update request to server
       const response = await fetch(`${apiUrl}/tasks/${taskId}`, {
         method: "PUT",
         headers: {
@@ -209,10 +176,14 @@ document
         body: JSON.stringify(updateData),
       });
 
+      console.log("Response status:", response.status);
+      const responseText = await response.text();
+      console.log("Response body:", responseText);
+
       if (response.ok) {
         alert("Task updated successfully.");
-        closeModal("update-task-modal"); // Close the modal
-        loadTasks(); // Reload tasks
+        closeModal("update-task-modal");
+        loadTasks();
       } else {
         alert("Failed to update task. Please try again.");
       }
