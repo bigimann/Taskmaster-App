@@ -4,7 +4,7 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: black;
+  background-color: white;
   font-family: Arial, sans-serif;
 }
 
@@ -12,9 +12,9 @@ body {
   width: 100%;
   max-width: 400px;
   padding: 20px;
-  background-color: white;
+  background-color: papayawhip;
   border-radius: 8px;
-  box-shadow: 0 4px 8px white;
+  box-shadow: 0 4px 8px black;
 }
 
 h1 {
