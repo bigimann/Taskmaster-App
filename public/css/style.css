@@ -12,7 +12,11 @@ body {
   width: 100%;
   max-width: 400px;
   padding: 20px;
+<<<<<<< HEAD
   background-color: whitesmoke;
+=======
+  background-color: papayawhip;
+>>>>>>> e290a1a3b8ef03679084158ca879fb610327d746
   border-radius: 8px;
   box-shadow: 0 4px 8px black;
 }
