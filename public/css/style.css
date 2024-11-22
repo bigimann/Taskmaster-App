@@ -60,6 +60,7 @@ input {
   margin: 0 auto;
   border: none;
   border-radius: 10px;
+  cursor: pointer;
 }
 
 .re {
