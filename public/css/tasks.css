@@ -15,6 +15,7 @@ body {
 .header-desktop h1 {
   font-size: 1em;
   font-family: monospace, sans-serif;
+  cursor: pointer;
 }
 
 nav {
@@ -60,7 +61,7 @@ nav .btn:hover {
   position: fixed;
   z-index: 1;
   left: 0;
-  top: 4rem;
+  top: 2rem;
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -91,6 +92,32 @@ nav .btn:hover {
   cursor: pointer;
 }
 
+.display-task-modal {
+  position: fixed;
+  top: 2rem;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uTask-modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.uTask-close-button {
+  float: right;
+  font-size: 20px;
+  cursor: pointer;
+}
+
 .filters {
   margin-top: 10px;
   display: flex;
@@ -104,6 +131,7 @@ nav .btn:hover {
   border-radius: 10px;
   border: none;
   padding: 10px;
+  cursor: pointer;
 }
 
 #task-form {
@@ -117,6 +145,7 @@ nav .btn:hover {
   background-color: green;
   border-radius: 10px;
   border: none;
+  cursor: pointer;
 }
 
 #task-form button,
@@ -124,6 +153,39 @@ textarea,
 input,
 select {
   padding: 10px;
+}
+
+#task-form textarea,
+input,
+select {
+  border: 1px solid black;
+}
+
+#update-task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#update-task-form button {
+  color: white;
+  background-color: green;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+#update-task-form button,
+textarea,
+input,
+select {
+  padding: 10px;
+}
+
+#update-task-form textarea,
+input,
+select {
+  border: 1px solid black;
 }
 
 h2 {
@@ -154,6 +216,7 @@ h2 {
   margin: 10px 10px 0 0;
   text-transform: uppercase;
   font-size: 10px;
+  cursor: pointer;
 }
 
 .task-card button:hover {
@@ -171,12 +234,12 @@ h2 {
 
 .header-mobile {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
   color: white;
   background-color: rgba(0, 0, 0, 0.905);
   box-shadow: 0 1px 4px white;
-  padding: 0.7rem;
+  padding: 1rem;
 }
 
 .header-mobile h1 {
@@ -190,25 +253,25 @@ h2 {
 img {
   filter: invert(1) brightness(2);
   height: auto;
-  width: 1.3rem;
+  width: 1.4rem;
 }
 
 .header-mobile button {
   background-color: transparent;
   border: none;
   color: orange;
-  font-size: 0.8em;
+  font-size: 1em;
   cursor: pointer;
 }
 
 .header-n {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
   padding: 5px;
   height: 20px;
   flex-grow: 1;
-  margin: 0 0 0 2rem;
+  margin: 0 0 0 1.5rem;
 }
 
 /* Responsive Styles */
@@ -244,10 +307,16 @@ img {
     color: white;
     font-weight: bolder;
     padding: 4px;
+    cursor: pointer;
   }
 
   .task-card button:hover {
     padding: 5px;
+  }
+
+  .header-mobile .btn-plus {
+    color: white;
+    font-size: 1.8rem;
   }
 }
 

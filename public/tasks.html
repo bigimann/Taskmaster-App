@@ -10,8 +10,8 @@
     <header class="header-mobile">
       <h1><span style="color: green">TASK</span> MASTER</h1>
       <div class="header-n">
-        <button class="btn2" onclick="showModal('add-task-modal')">
-          <img src="images/add.webp" alt="addTask" width="40" height="30" />
+        <button class="btn2 btn-plus" onclick="showModal('add-task-modal')">
+          &plus;
         </button>
         <button class="btn2" onclick="showModal('display-tasks-modal')">
           <img
@@ -21,7 +21,7 @@
             height="10"
           />
         </button>
-        <button class="btn" onclick="logout()">Logout</button>
+        <button class="btn btn2" onclick="logout()">Logout</button>
       </div>
     </header>
 
@@ -90,6 +90,37 @@
           <button onclick="applyFilters()">Apply Filters</button>
           <button onclick="searchTasks()">Search</button>
         </div>
+      </div>
+    </div>
+
+    <div
+      id="update-task-modal"
+      class="display-task-modal"
+      style="display: none"
+    >
+      <div class="uTask-modal-content">
+        <span
+          class="uTask-close-button"
+          onclick="closeModal('update-task-modal')"
+          >&times;</span
+        >
+        <h2>Update Task</h2>
+        <form id="update-task-form">
+          <input type="hidden" id="update-task-id" />
+          <label for="update-title">Title:</label>
+          <input type="text" id="update-title" />
+          <label for="update-description">Description:</label>
+          <textarea id="update-description"></textarea>
+          <label for="update-deadline">Deadline (YYYY-MM-DD):</label>
+          <input type="date" id="update-deadline" />
+          <label for="update-priority">Priority:</label>
+          <select id="update-priority">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+          <button type="submit">Update Task</button>
+        </form>
       </div>
     </div>
 
