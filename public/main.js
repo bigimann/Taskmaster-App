@@ -280,6 +280,7 @@ async function searchTasks() {
     });
     const tasks = await response.json();
     displayTasks(tasks);
+    closeModal("display-tasks-modal");
   } catch (error) {
     console.error("Error:", error);
   }
