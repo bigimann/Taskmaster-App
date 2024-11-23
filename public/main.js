@@ -103,6 +103,28 @@ function displayTasks(tasks) {
   // closeModal("display-tasks-modal");
 }
 
+//Display task search
+function displayTasksSearch(tasks) {
+  const searchContainer = document.getElementById("search-container");
+  container.innerHTML = ""; // Clear the container before rendering
+
+  tasks.forEach((task, index) => {
+    const taskElem = document.createElement("div");
+    taskElem.className = "task-card";
+    taskElem.innerHTML = `
+      <h3>${index + 1}. ${task.title}</h3>
+      <p>${task.description}</p>
+      <p><strong>Deadline:</strong> ${new Date(
+        task.deadline
+      ).toLocaleDateString()}</p>
+      <p><strong>Priority:</strong> ${task.priority}</p>
+      <button onclick="updateTask('${task._id}')">Update</button>
+      <button onclick="deleteTask('${task._id}')">Delete</button>
+    `;
+    searchContainer.appendChild(taskElem);
+  });
+}
+
 //delete task
 async function deleteTask(taskId) {
   const token = localStorage.getItem("token");
@@ -260,7 +282,6 @@ document.getElementById("task-form")?.addEventListener("submit", async (e) => {
 async function applyFilters() {
   const priority = document.getElementById("filter-priority").value;
   const dueDate = document.getElementById("filter-due-date").value;
-  const searchContainer = document.getElementById("search-container");
   const token = localStorage.getItem("token");
 
   const query = new URLSearchParams();
@@ -272,7 +293,7 @@ async function applyFilters() {
       headers: { Authorization: `Bearer ${token}` },
     });
     const tasks = await response.json();
-    searchContainer = displayTasks(tasks);
+    displayTasksSearch(tasks);
   } catch (error) {
     console.error("Error:", error);
   }
@@ -281,7 +302,6 @@ async function applyFilters() {
 // Search Tasks by Title or Description
 async function searchTasks() {
   const term = document.getElementById("search-term").value;
-  const searchContainer = document.getElementById("search-container");
   const token = localStorage.getItem("token");
 
   try {
@@ -289,7 +309,7 @@ async function searchTasks() {
       headers: { Authorization: `Bearer ${token}` },
     });
     const tasks = await response.json();
-    searchContainer = displayTasks(tasks);
+    displayTasksSearch(tasks);
   } catch (error) {
     console.error("Error:", error);
   }
