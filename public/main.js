@@ -107,17 +107,32 @@ function displayTasks(tasks) {
 async function deleteTask(taskId) {
   const token = localStorage.getItem("token");
 
+  // Prompt user for confirmation
+  const userConfirmed = confirm(
+    "Are you sure you want to delete this task? This action cannot be undone."
+  );
+  if (!userConfirmed) {
+    return; // Exit function if user cancels
+  }
+
   try {
-    await fetch(`${apiUrl}/tasks/${taskId}`, {
+    const response = await fetch(`${apiUrl}/tasks/${taskId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
-    loadTasks(); // Reload tasks after deletion
+
+    if (response.ok) {
+      alert("Task deleted successfully.");
+      loadTasks(); // Reload tasks after successful deletion
+    } else {
+      alert("Failed to delete task. Please try again.");
+    }
   } catch (error) {
     console.error("Error:", error);
+    alert("An error occurred while deleting the task.");
   }
 }
 
