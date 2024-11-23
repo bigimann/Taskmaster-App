@@ -93,18 +93,12 @@
       </div>
     </div>
 
-    <div
-      id="update-task-modal"
-      class="display-task-modal"
-      style="display: none"
-    >
-      <div class="uTask-modal-content">
-        <span
-          class="uTask-close-button"
-          onclick="closeModal('update-task-modal')"
+    <div id="update-task-modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <span class="close-button" onclick="closeModal('update-task-modal')"
           >&times;</span
         >
-        <h2>Update Task</h2>
+        <h3>Update Task</h3>
         <form id="update-task-form">
           <input type="hidden" id="update-task-id" />
           <label for="update-title">Title:</label>
@@ -115,13 +109,12 @@
           <input type="date" id="update-deadline" />
           <label for="update-priority">Priority:</label>
           <select id="update-priority">
+            <option value="">Select Priority</option>
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
           </select>
-          <button type="submit" onclick="showModal('display-task-modal')">
-            Update Task
-          </button>
+          <button type="submit">Update Task</button>
         </form>
       </div>
     </div>
