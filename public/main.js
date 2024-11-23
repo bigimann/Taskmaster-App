@@ -100,7 +100,7 @@ function displayTasks(tasks) {
     `;
     container.appendChild(taskElem);
   });
-  closeModal(modalId);
+  // closeModal("display-tasks-modal");
 }
 
 //delete task
@@ -231,7 +231,7 @@ document.getElementById("task-form")?.addEventListener("submit", async (e) => {
   const priority = document.getElementById("priority").value;
 
   try {
-    await fetch(`${apiUrl}/tasks`, {
+    const response = await fetch(`${apiUrl}/tasks`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -239,11 +239,20 @@ document.getElementById("task-form")?.addEventListener("submit", async (e) => {
       },
       body: JSON.stringify({ title, description, deadline, priority }),
     });
-    closeModal("add-task-modal"); // Close modal after submission
-    alert(`Task added succesfully`);
-    loadTasks(); // Refresh task list
+
+    if (response.ok) {
+      // Reset the form fields
+      document.getElementById("task-form").reset();
+
+      closeModal("add-task-modal"); // Close modal after submission
+      alert(`Task added successfully`);
+      loadTasks(); // Refresh task list
+    } else {
+      alert("Failed to add task. Please try again.");
+    }
   } catch (error) {
     console.error("Error:", error);
+    alert("An error occurred. Please try again.");
   }
 });
 
@@ -251,6 +260,7 @@ document.getElementById("task-form")?.addEventListener("submit", async (e) => {
 async function applyFilters() {
   const priority = document.getElementById("filter-priority").value;
   const dueDate = document.getElementById("filter-due-date").value;
+  const searchContainer = document.getElementById("search-container");
   const token = localStorage.getItem("token");
 
   const query = new URLSearchParams();
@@ -262,7 +272,7 @@ async function applyFilters() {
       headers: { Authorization: `Bearer ${token}` },
     });
     const tasks = await response.json();
-    displayTasks(tasks);
+    searchContainer = displayTasks(tasks);
   } catch (error) {
     console.error("Error:", error);
   }
@@ -271,6 +281,7 @@ async function applyFilters() {
 // Search Tasks by Title or Description
 async function searchTasks() {
   const term = document.getElementById("search-term").value;
+  const searchContainer = document.getElementById("search-container");
   const token = localStorage.getItem("token");
 
   try {
@@ -278,7 +289,7 @@ async function searchTasks() {
       headers: { Authorization: `Bearer ${token}` },
     });
     const tasks = await response.json();
-    displayTasks(tasks);
+    searchContainer = displayTasks(tasks);
   } catch (error) {
     console.error("Error:", error);
   }
