@@ -106,7 +106,7 @@ function displayTasks(tasks) {
 //Display task search
 function displayTasksSearch(tasks) {
   const searchContainer = document.getElementById("search-container");
-  container.innerHTML = ""; // Clear the container before rendering
+  searchContainer.innerHTML = ""; // Clear the container before rendering
 
   tasks.forEach((task, index) => {
     const taskElem = document.createElement("div");
@@ -181,7 +181,7 @@ async function updateTask(taskId) {
     // Show the modal
     document.getElementById("update-task-modal").style.display = "block";
   } catch (error) {
-    console.error("Error fetching task details:", error);
+    console.log(error);
     alert("Failed to fetch task details. Please try again.");
   }
 }
