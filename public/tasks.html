@@ -48,31 +48,15 @@
         >
         <h2>Add Task</h2>
         <form id="task-form">
-          <p class="form">
-            <label for="title">Title</label>
-            <input type="text" id="title" placeholder="Task Title" required />
-          </p>
-
-          <p class="form">
-            <label for="description">Description</label>
-            <textarea id="description" placeholder="Description"></textarea>
-          </p>
-
-          <p class="form">
-            <label for="date">Date</label>
-            <input type="date" id="deadline" required />
-          </p>
-
-          <p class="form">
-            <label for="priority">Priority</label>
-            <select id="priority">
-              <option value="">Click to set priority</option>
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-            </select>
-          </p>
-
+          <input type="text" id="title" placeholder="Task Title" required />
+          <textarea id="description" placeholder="Description"></textarea>
+          <input type="date" id="deadline" required />
+          <select id="priority">
+            <option value="">Click to set priority</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
           <button type="submit">Add Task</button>
         </form>
       </div>
@@ -85,41 +69,55 @@
           >&times;</span
         >
         <h2>Tasks</h2>
-
         <div id="search-container"></div>
-
         <div class="filters">
-          <p class="form">
-            <label for="priority">Priority</label>
-            <select id="filter-priority">
-              <option value="">Filter by Priority</option>
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-            </select>
-          </p>
-
-          <p class="form">
-            <label for="date">Date</label>
-            <input
-              type="date"
-              id="filter-due-date"
-              placeholder="Filter by Due Date"
-            />
-          </p>
-
-          <p class="form">
-            <label for="search">Search</label>
-            <input
-              type="text"
-              id="search-term"
-              placeholder="Search by Title or Description"
-            />
-          </p>
-
+          <select id="filter-priority">
+            <option value="">Filter by Priority</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+          <input
+            type="date"
+            id="filter-due-date"
+            placeholder="Filter by Due Date"
+          />
+          <input
+            type="text"
+            id="search-term"
+            placeholder="Search by Title or Description"
+          />
           <button onclick="applyFilters()">Apply Filters</button>
           <button onclick="searchTasks()">Search</button>
         </div>
+      </div>
+    </div>
+
+    <!-- update task -->
+
+    <div id="update-task-modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <span class="close-button" onclick="closeModal('update-task-modal')"
+          >&times;</span
+        >
+        <h3>Update Task</h3>
+        <form id="update-task-form">
+          <input type="hidden" id="update-task-id" />
+          <label for="update-title">Title:</label>
+          <input type="text" id="update-title" />
+          <label for="update-description">Description:</label>
+          <textarea id="update-description"></textarea>
+          <label for="update-deadline">Deadline (YYYY-MM-DD):</label>
+          <input type="date" id="update-deadline" />
+          <label for="update-priority">Priority:</label>
+          <select id="update-priority">
+            <option value="">Select Priority</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+          <button type="submit">Update Task</button>
+        </form>
       </div>
     </div>
 

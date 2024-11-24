@@ -33,27 +33,36 @@ exports.getTasks = async (req, res) => {
 // Update an existing task
 exports.updateTask = async (req, res) => {
   try {
-    const { id: taskId } = req.params;
-    const userId = req.user.id;
+    const taskId = req.params.id;
+    const userId = req.user.id; // Extracted from `auth` middleware
 
-    const task = await Task.findOne({ _id: taskId, userId });
-    if (!task) return res.status(404).json({ message: "Task not found" });
+    // Check if the task exists and belongs to the user
+    const task = await Task.findOne({ _id: taskId, user: userId });
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
 
+    // Only update fields that are provided in the request body
     const allowedUpdates = ["title", "description", "deadline", "priority"];
-    const updates = Object.keys(req.body).filter((key) =>
-      allowedUpdates.includes(key)
+    const updates = Object.keys(req.body);
+
+    const isValidUpdate = updates.every((update) =>
+      allowedUpdates.includes(update)
     );
+    if (!isValidUpdate) {
+      return res.status(400).json({ message: "Invalid update fields" });
+    }
 
     updates.forEach((update) => {
       task[update] = req.body[update];
     });
 
-    task.updatedAt = Date.now();
+    // Save updated task
     await task.save();
 
     res.status(200).json({ message: "Task updated successfully", task });
   } catch (error) {
-    console.log(error);
+    console.error("Error updating task:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
