@@ -173,7 +173,7 @@ h2 {
 }
 
 .task-card {
-  background-color: white;
+  background-color: aliceblue;
   color: black;
   padding: 0.6rem;
   border-radius: 10px;
@@ -205,6 +205,10 @@ h2 {
   color: white;
 }
 
+.task-card h3 {
+  margin: 0 0 0.5rem 0;
+}
+
 #tasks-container {
   display: flex;
   flex-direction: column;
@@ -230,12 +234,6 @@ h2 {
   margin: 0;
 }
 
-img {
-  filter: invert(1) brightness(2);
-  height: auto;
-  width: 1.4rem;
-}
-
 .header-mobile button {
   background-color: transparent;
   border: none;
@@ -252,6 +250,14 @@ img {
   height: 20px;
   flex-grow: 1;
   margin: 0 0 0 1.5rem;
+}
+
+.editForm input,
+select,
+textarea {
+  padding: 10px;
+  margin-bottom: 0.3rem;
+  border: 1px solid gray;
 }
 
 /* Responsive Styles */
@@ -294,9 +300,33 @@ img {
     padding: 5px;
   }
 
+  .task-card h3 {
+    margin: 0 0 0.5rem 0;
+  }
+
   .header-mobile .btn-plus {
     color: white;
     font-size: 1.8rem;
+  }
+
+  .header-mobile .btn-search {
+    font-size: 1.1rem;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  .editForm input,
+  select,
+  textarea {
+    padding: 3px;
+    margin-bottom: 0.3rem;
+    border: 1px solid gray;
   }
 }
 

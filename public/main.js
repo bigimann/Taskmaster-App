@@ -88,6 +88,8 @@ function displayTasks(tasks) {
   tasks.forEach((task, index) => {
     const taskElem = document.createElement("div");
     taskElem.className = "task-card";
+    taskElem.id = `task-card-${task._id}`;
+
     taskElem.innerHTML = `
       <h3>${index + 1}. ${task.title}</h3>
       <p>${task.description}</p>
@@ -95,12 +97,16 @@ function displayTasks(tasks) {
         task.deadline
       ).toLocaleDateString()}</p>
       <p><strong>Priority:</strong> ${task.priority}</p>
-      <button onclick="updateTask('${task._id}')">Update</button>
+      <div id="edit-section-${task._id}" style="display: none;"></div>
+      <button id="update-btn-${task._id}" onclick="initiateUpdate('${
+      task._id
+    }', '${task.title}', '${task.description}', '${task.deadline}', '${
+      task.priority
+    }')">Update</button>
       <button onclick="deleteTask('${task._id}')">Delete</button>
     `;
     container.appendChild(taskElem);
   });
-  // closeModal("display-tasks-modal");
 }
 
 //Display task search
@@ -125,7 +131,7 @@ function displayTasksSearch(tasks) {
   });
 }
 
-//delete task
+//DELETE TASK
 async function deleteTask(taskId) {
   const token = localStorage.getItem("token");
 
@@ -153,93 +159,116 @@ async function deleteTask(taskId) {
       alert("Failed to delete task. Please try again.");
     }
   } catch (error) {
-    console.error("Error:", error);
+    console.log(error);
     alert("An error occurred while deleting the task.");
   }
 }
 
-//update task
-// Show update modal and populate with existing task details
-async function updateTask(taskId) {
+// UPDATE TASK
+function initiateUpdate(taskId, title, description, deadline, priority) {
+  const editSection = document.getElementById(`edit-section-${taskId}`);
+
+  // Populate the edit section with the update form
+  editSection.className = "editForm";
+  editSection.innerHTML = `
+    <input type="text" id="title-${taskId}" value="${title}" />
+    <textarea id="description-${taskId}">${description}</textarea>
+    <input type="date" id="deadline-${taskId}" value="${
+    new Date(deadline).toISOString().split("T")[0]
+  }" />
+    <select id="priority-${taskId}">
+      <option value="low" ${priority === "low" ? "selected" : ""}>Low</option>
+      <option value="medium" ${
+        priority === "medium" ? "selected" : ""
+      }>Medium</option>
+      <option value="high" ${
+        priority === "high" ? "selected" : ""
+      }>High</option>
+    </select>
+    <button onclick="saveTask('${taskId}')">Save</button>
+    <button onclick="cancelEdit('${taskId}')">Cancel</button>
+  `;
+
+  // Show the edit section and hide the update button
+  editSection.style.display = "block";
+  document.getElementById(`update-btn-${taskId}`).style.display = "none";
+}
+
+//UPDATE TASK SAVE MODAL
+async function saveTask(taskId) {
+  const title = document.getElementById(`title-${taskId}`).value.trim();
+  const description = document
+    .getElementById(`description-${taskId}`)
+    .value.trim();
+  const deadline = document.getElementById(`deadline-${taskId}`).value.trim();
+  const priority = document.getElementById(`priority-${taskId}`).value;
+
+  const updateData = { title, description, deadline, priority };
+
   const token = localStorage.getItem("token");
 
   try {
-    // Fetch existing task details
     const response = await fetch(`${apiUrl}/tasks/${taskId}`, {
-      headers: { Authorization: `Bearer ${token}` },
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updateData),
     });
-    const task = await response.json();
 
-    // Populate the form with current task details
-    document.getElementById("update-task-id").value = taskId;
-    document.getElementById("update-title").value = task.title || "";
-    document.getElementById("update-description").value =
-      task.description || "";
-    document.getElementById("update-deadline").value = task.deadline || "";
-    document.getElementById("update-priority").value = task.priority || "";
-
-    // Show the modal
-    document.getElementById("update-task-modal").style.display = "block";
+    if (response.ok) {
+      alert("Task updated successfully.");
+      loadTasks(); // Reload tasks to reflect changes
+    } else {
+      alert("Failed to update task.");
+    }
   } catch (error) {
-    console.log(error);
-    alert("Failed to fetch task details. Please try again.");
+    console.error("Error updating task:", error);
+    alert("An error occurred while updating the task.");
   }
 }
 
-// Handle update form submission
+//UPDATE TASK CANCEL EDIT MODAL
+function cancelEdit(taskId) {
+  const editSection = document.getElementById(`edit-section-${taskId}`);
+  editSection.style.display = "none"; // Hide the edit form
+  document.getElementById(`update-btn-${taskId}`).style.display = "block"; // Show the update button
+}
+
+// Submit updates
 document
   .getElementById("update-task-form")
   .addEventListener("submit", async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
 
-    // Collect updated values
     const taskId = document.getElementById("update-task-id").value;
-    const updatedTitle = document.getElementById("update-title").value.trim();
-    const updatedDescription = document
-      .getElementById("update-description")
-      .value.trim();
-    const updatedDeadline = document
-      .getElementById("update-deadline")
-      .value.trim();
-    const updatedPriority = document
-      .getElementById("update-priority")
-      .value.trim();
-
-    // Create an update object with only the fields the user filled out
-    const updateData = {};
-    if (updatedTitle) updateData.title = updatedTitle;
-    if (updatedDescription) updateData.description = updatedDescription;
-    if (updatedDeadline) updateData.deadline = updatedDeadline;
-    if (updatedPriority) updateData.priority = updatedPriority;
-
-    // Check if at least one field is being updated
-    if (Object.keys(updateData).length === 0) {
-      alert("No fields to update. Please fill out at least one field.");
-      return;
-    }
+    const updates = {
+      title: document.getElementById("update-title").value.trim(),
+      description: document.getElementById("update-description").value.trim(),
+      deadline: document.getElementById("update-deadline").value.trim(),
+      priority: document.getElementById("update-priority").value.trim(),
+    };
 
     try {
-      // Send update request to server
       const response = await fetch(`${apiUrl}/tasks/${taskId}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(updateData),
+        body: JSON.stringify(updates),
       });
 
-      if (response.ok) {
-        alert("Task updated successfully.");
-        closeModal("update-task-modal"); // Close the modal
-        loadTasks(); // Reload tasks
-      } else {
-        alert("Failed to update task. Please try again.");
-      }
+      if (!response.ok) throw new Error("Update failed");
+
+      alert("Task updated successfully");
+      closeModal("update-task-modal");
+      loadTasks();
     } catch (error) {
-      console.error("Error updating task:", error);
-      alert("An error occurred. Please try again.");
+      console.log(error);
+      alert("Could not update task. Try again.");
     }
   });
 
