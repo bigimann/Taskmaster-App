@@ -173,7 +173,7 @@ h2 {
 }
 
 .task-card {
-  background-color: aliceblue;
+  background-color: white;
   color: black;
   padding: 0.6rem;
   border-radius: 10px;
@@ -252,10 +252,18 @@ h2 {
   margin: 0 0 0 1.5rem;
 }
 
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
 .editForm input,
 select,
 textarea {
-  padding: 10px;
+  padding: 5px;
   margin-bottom: 0.3rem;
   border: 1px solid gray;
 }
