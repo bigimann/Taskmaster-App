@@ -88,7 +88,7 @@ function displayTasks(tasks) {
   tasks.forEach((task, index) => {
     const taskElem = document.createElement("div");
     taskElem.className = "task-card";
-    taskElem.id = `task-card-${task._id}`;
+    // taskElem.id = `task-card-${task._id}`;
 
     taskElem.innerHTML = `
       <h3>${index + 1}. ${task.title}</h3>
@@ -124,8 +124,6 @@ function displayTasksSearch(tasks) {
         task.deadline
       ).toLocaleDateString()}</p>
       <p><strong>Priority:</strong> ${task.priority}</p>
-      <button onclick="updateTask('${task._id}')">Update</button>
-      <button onclick="deleteTask('${task._id}')">Delete</button>
     `;
     searchContainer.appendChild(taskElem);
   });
