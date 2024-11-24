@@ -38,39 +38,7 @@
       <button class="btn" onclick="logout()">Logout</button>
     </nav>
 
-    <div id="tasks-container">
-      <div class="task-card">
-        <div class="editForm">
-          <form id="update-form-${task._id}">
-            <h3>
-              ${index + 1}.
-              <input type="text" id="title-${task._id}" value="${task.title}" />
-            </h3>
-            <textarea id="description-${task._id}">
-${task.description}</textarea
-            >
-            <p>
-              <strong>Deadline:</strong>
-              <input type="date" id="deadline-${task._id}" value="deadline" />
-            </p>
-            <p>
-              <strong>Priority:</strong>
-              <select id="priority-${task._id}">
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-              </select>
-            </p>
-            <button type="button" onclick="saveTask('${task._id}')">
-              Save
-            </button>
-            <button type="button" onclick="deleteTask('${task._id}')">
-              Delete
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
+    <div id="tasks-container"></div>
 
     <!-- Add Task Modal -->
     <div id="add-task-modal" class="modal">
