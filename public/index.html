@@ -6,7 +6,6 @@
     <title>Homepage</title>
     <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon" />
     <style>
-      /* Global reset */
       * {
         box-sizing: border-box;
         margin: 0;
@@ -19,16 +18,14 @@
         height: 100%;
       }
 
-      /* App layout */
       #app {
         display: flex;
         height: 100vh;
       }
 
-      /* Sidebar styling */
       .sidebar {
         width: 250px;
-        background-color: rgba(0, 0, 0, 0.544);
+        background-color: black;
         color: #fff;
         height: 100%;
         z-index: 1000;
@@ -59,7 +56,8 @@
       }
 
       .sidebar nav a:hover {
-        background-color: yellowgreen;
+        background-color: green;
+        transition: 0.2s;
       }
 
       /* Hamburger Menu Styling */
@@ -122,8 +120,8 @@
 
       <!-- Sidebar -->
       <div id="sidebar" class="sidebar">
-        <h2 style="text-align: center; margin-bottom: 30px">
-          Task<span style="color: yellowgreen; font-weight: bold">Master</span>
+        <h2 style="margin-bottom: 15px">
+          <span style="color: green; font-weight: bold">Task</span> Master
         </h2>
         <nav>
           <a href="#" onclick="loadContent('form.html'), toggleSidebar()"
@@ -143,8 +141,7 @@
 
       <!-- Main content area -->
       <div id="content" class="content">
-        <h1>Welcome</h1>
-        <p>Select an option from the sidebar to load content.</p>
+        <h1>Hi there! Welcome!</h1>
       </div>
     </div>
 
