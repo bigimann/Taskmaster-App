@@ -102,23 +102,22 @@
         box-sizing: border-box;
       }
 
-      /* Media Query for smaller screens */
-      @media (max-width: 768px) {
+      @media (max-width: 600px) {
         .wrapper {
           flex-direction: column;
-          height: auto; /* Allow wrapper to adjust height for smaller screens */
+          height: auto;
         }
 
         .content {
-          display: none; /* Hide content section on small screens */
+          display: none;
         }
 
         .form {
-          border-right: none; /* Remove the right border when content is hidden */
+          border-right: none;
         }
 
         .form form {
-          padding: 15px; /* Add some padding around the form on small screens */
+          padding: 15px;
         }
       }
     </style>
