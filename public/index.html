@@ -92,6 +92,11 @@
         margin-left: 0;
       }
 
+      .ham {
+        display: flex;
+        justify-content: space-between;
+      }
+
       /* Responsive Design */
       @media screen and (max-width: 768px) {
         .hamburger {
@@ -110,6 +115,10 @@
         .content {
           margin-left: 0;
         }
+
+        .ham-title {
+          display: block;
+        }
       }
     </style>
   </head>
@@ -117,12 +126,26 @@
   <body>
     <div id="app">
       <!-- Hamburger menu -->
-      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      <div class="ham">
+        <h2 class="ham-title" style="margin-bottom: 15px">
+          <span
+            style="
+              color: green;
+              font-weight: bold;
+              margin-left: 25px;
+              display: none;
+            "
+            >Task</span
+          >
+          Master
+        </h2>
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      </div>
 
       <!-- Sidebar -->
       <div id="sidebar" class="sidebar">
         <h2 style="margin-bottom: 15px">
-          <span style="color: green; font-weight: bold; margin-left: 20px"
+          <span style="color: green; font-weight: bold; margin-left: 25px"
             >Task</span
           >
           Master
