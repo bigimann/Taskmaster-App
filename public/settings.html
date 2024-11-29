@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings</title>
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon" />
+    <style>
+      /* Default Light Mode Styles */
+      :root {
+        --background-color: #ffffff;
+        --text-color: #000000;
+      }
+
+      /* Dark Mode Styles */
+      .dark-mode {
+        --background-color: #121212;
+        --text-color: #ffffff;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: var(--background-color);
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input,
+      select,
+      button {
+        margin-bottom: 15px;
+        padding: 10px;
+        font-size: 14px;
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: var(--background-color);
+        color: var(--text-color);
+      }
+
+      button {
+        background-color: green;
+        color: #ffffff;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Settings</h2>
+      <form id="settingsForm">
+        <!-- Theme Selection -->
+        <label for="theme">Theme</label>
+        <select id="theme">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+
+        <!-- Change Username -->
+        <label for="username">Change Username</label>
+        <input type="text" id="username" placeholder="Enter new username" />
+
+        <!-- Change Password -->
+        <label for="password">Change Password</label>
+        <input type="password" id="password" placeholder="Enter new password" />
+
+        <button type="submit">Save Changes</button>
+      </form>
+    </div>
+
+    <script>
+      // Function to apply the selected theme
+      function applyTheme(theme) {
+        if (theme === "dark") {
+          document.body.classList.add("dark-mode");
+        } else {
+          document.body.classList.remove("dark-mode");
+        }
+      }
+
+      // Load the saved theme from localStorage
+      const savedTheme = localStorage.getItem("theme") || "light";
+      applyTheme(savedTheme);
+
+      // Set the dropdown to reflect the saved theme
+      document.getElementById("theme").value = savedTheme;
+
+      // Save theme changes and other settings on form submission
+      document
+        .querySelector("#settingsForm")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          // Save the selected theme
+          const selectedTheme = document.getElementById("theme").value;
+          localStorage.setItem("theme", selectedTheme); // Save theme to localStorage
+          applyTheme(selectedTheme);
+
+          // Get the updated username and password values
+          const updatedUsername = document
+            .getElementById("username")
+            .value.trim();
+          const updatedPassword = document
+            .getElementById("password")
+            .value.trim();
+
+          // Simulate saving the username and password (add actual backend logic here)
+          console.log("Updated Username:", updatedUsername);
+          console.log("Updated Password:", updatedPassword);
+
+          // Notify the user
+          alert("Settings updated successfully!");
+        });
+    </script>
+  </body>
+</html>

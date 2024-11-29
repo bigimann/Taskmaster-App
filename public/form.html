@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Task</title>
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon" />
+    <style>
+      #form {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        max-width: 500px;
+        width: 100%;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      form,
+      input,
+      textarea,
+      select {
+        padding: 0.5rem;
+        border: 1px solid grey;
+        border-radius: 8px;
+      }
+
+      button {
+        background-color: green;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="form">
+      <h2>Add <span style="color: green">Task</span></h2>
+      <form id="addTaskForm">
+        <label>Title <input type="text" id="taskTitle" /></label>
+        <label>Description <textarea id="taskDescription"></textarea></label>
+        <label>Deadline <input type="date" id="taskDeadline" /></label>
+        <label>
+          Priority
+          <select id="taskPriority">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </label>
+        <button type="submit">Add Task</button>
+      </form>
+    </div>
+
+    <script>
+      document
+        .querySelector("#addTaskForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const title = document.getElementById("taskTitle").value.trim();
+          const description = document
+            .getElementById("taskDescription")
+            .value.trim();
+          const deadline = document.getElementById("taskDeadline").value;
+          const priority = document.getElementById("taskPriority").value;
+
+          if (!title || !description || !deadline || !priority) {
+            alert("Please fill in all fields before submitting.");
+            return;
+          }
+
+          try {
+            const response = await fetch("http://localhost:5000/tasks", {
+              // Use the backend's URL
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ title, description, deadline, priority }),
+            });
+
+            if (!response.ok) {
+              const error = await response.json();
+              throw new Error(error.message || "Error creating task");
+            }
+
+            const result = await response.json();
+            alert("Task added successfully!");
+            console.log(result);
+            e.target.reset(); // Reset form fields
+          } catch (err) {
+            console.log(err);
+            alert("Failed to create task. Try again later.");
+          }
+        });
+    </script>
+  </body>
+</html>

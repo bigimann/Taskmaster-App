@@ -3,35 +3,256 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register | TaskMaster</title>
+    <title>Homepage</title>
     <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon" />
-    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      /* Global reset */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      body,
+      html {
+        height: 100%;
+      }
+
+      /* App layout */
+      #app {
+        display: flex;
+        height: 100vh;
+      }
+
+      /* Sidebar styling */
+      .sidebar {
+        width: 250px;
+        background-color: #328235;
+        color: #fff;
+        height: 100%;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        padding-top: 20px;
+        position: fixed;
+        transition: left 0.3s ease;
+      }
+
+      .sidebar.hidden {
+        left: -250px;
+      }
+
+      .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+      }
+
+      .sidebar nav a {
+        color: #fff;
+        text-decoration: none;
+        padding: 10px 10px;
+        transition: 0.2s;
+        border-radius: 10px;
+      }
+
+      .sidebar nav a:hover {
+        background-color: yellowgreen;
+      }
+
+      /* Hamburger Menu Styling */
+      .hamburger {
+        display: none;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 30px;
+        cursor: pointer;
+        padding: 10px;
+        color: green;
+        background: none;
+        border: none;
+        z-index: 1100;
+      }
+
+      /* Content Area Styling */
+      .content {
+        flex-grow: 1;
+        margin-left: 250px;
+        padding: 20px;
+        overflow-y: auto;
+        transition: margin-left 0.3s ease;
+      }
+
+      .content.shifted {
+        margin-left: 0;
+      }
+
+      /* Responsive Design */
+      @media screen and (max-width: 768px) {
+        .hamburger {
+          display: block;
+        }
+
+        .sidebar {
+          position: fixed;
+          left: -250px;
+        }
+
+        .sidebar.visible {
+          left: 0;
+        }
+
+        .content {
+          margin-left: 0;
+        }
+      }
+    </style>
   </head>
+
   <body>
-    <div class="container">
-      <h1>Register</h1>
-      <form id="register-form">
-        <p class="forms">
-          <label for="username">Username</label>
-          <input type="text" id="username" placeholder="Username" required />
-        </p>
-        <p class="forms">
-          <label for="email">Email</label>
-          <input type="email" id="email" placeholder="Email" required />
-        </p>
-        <p class="forms">
-          <label for="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Password"
-            required
-          />
-        </p>
-        <button class="re" type="submit">Register</button>
-      </form>
-      <p>Already have an account? <a href="login.html">Login</a></p>
+    <div id="app">
+      <!-- Hamburger menu -->
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+
+      <!-- Sidebar -->
+      <div id="sidebar" class="sidebar">
+        <h2 style="text-align: center; margin-bottom: 30px">
+          Task<span style="color: yellowgreen; font-weight: bold">Master</span>
+        </h2>
+        <nav>
+          <a href="#" onclick="loadContent('form.html'), toggleSidebar()"
+            >Add Task</a
+          >
+          <a
+            href="#"
+            onclick="loadContent('viewTask.html',loadTasks), toggleSidebar()"
+            >View Tasks</a
+          >
+          <a href="#" onclick="loadContent('settings.html'), toggleSidebar()"
+            >Settings</a
+          >
+          <a href="#" id="logoutButton" onclick=" toggleSidebar()">Logout</a>
+        </nav>
+      </div>
+
+      <!-- Main content area -->
+      <div id="content" class="content">
+        <h1>Welcome</h1>
+        <p>Select an option from the sidebar to load content.</p>
+      </div>
     </div>
-    <script src="main.js"></script>
+
+    <script>
+      if (!localStorage.getItem("authToken")) {
+        window.location.href = "/public/login.html";
+      }
+
+      // Detect screen width to adjust behavior
+      const isSmallScreen = () => window.innerWidth <= 768;
+
+      // Sidebar toggle logic
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle("visible");
+      }
+
+      // Navigation logic
+      function navigate(file) {
+        if (isSmallScreen()) {
+          toggleSidebar(); // Close sidebar only on small screens
+        }
+        loadContent(file);
+      }
+
+      function loadContent(file, callback) {
+        fetch(file)
+          .then((response) => response.text())
+          .then((html) => {
+            const content = document.getElementById("content");
+            content.innerHTML = html;
+
+            // Ensure scripts in the loaded content are executed
+            const scripts = content.querySelectorAll("script");
+            scripts.forEach((script) => {
+              const newScript = document.createElement("script");
+              newScript.textContent = script.textContent;
+              document.body.appendChild(newScript);
+              document.body.removeChild(newScript);
+            });
+
+            if (callback) callback(); // Optional: Invoke callback after content is loaded
+          })
+          .catch((err) => {
+            console.error("Error loading content:", err);
+          });
+      }
+
+      // Adjust sidebar visibility on resize
+      window.addEventListener("resize", () => {
+        const sidebar = document.getElementById("sidebar");
+        if (!isSmallScreen()) {
+          sidebar.classList.remove("hidden", "visible");
+        } else {
+          sidebar.classList.add("hidden");
+        }
+      });
+
+      const loadTasks = async () => {
+        const tasksContainer = document.getElementById("tasksContainer");
+
+        try {
+          // Fetch tasks from the backend
+          const response = await fetch("http://localhost:5000/tasks");
+
+          if (!response.ok) {
+            throw new Error("Error fetching tasks");
+          }
+
+          const data = await response.json();
+          const tasks = data.tasks;
+
+          if (tasks.length === 0) {
+            tasksContainer.innerHTML = "<p>No tasks available.</p>";
+            return;
+          }
+
+          // Clear the "Loading tasks..." message
+          tasksContainer.innerHTML = "";
+
+          // Loop through tasks and dynamically create HTML
+          tasks.forEach((task) => {
+            const taskElement = document.createElement("div");
+            taskElement.classList.add("task-item");
+
+            taskElement.innerHTML = `
+             <div class="task-card">
+                   <h3>${task.title}</h3>
+                   <p>${task.description}</p>
+                  <p><strong>Deadline:</strong> ${task.deadline}</p>
+                   <p><strong>Priority:</strong> ${task.priority}</p>
+                <button onclick="openUpdateTaskModal('${task.title}')">Update</button>
+                   <button onclick="deleteTask('${task._id}')">Delete</button>
+            </div>
+          `;
+
+            tasksContainer.appendChild(taskElement);
+          });
+        } catch (err) {
+          tasksContainer.innerHTML =
+            "<p>Error loading tasks. Please try again later.</p>";
+          console.error(err);
+        }
+      };
+
+      document.getElementById("logoutButton").addEventListener("click", () => {
+        // Clear any saved theme or user data
+        localStorage.removeItem("authToken");
+        // Redirect to the login page (or any designated logout route)
+        window.location.href = "/public/index.html";
+      });
+    </script>
   </body>
 </html>

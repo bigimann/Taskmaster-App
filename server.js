@@ -1,13 +1,17 @@
+require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const cors = require("cors");
-const tasksRoute = require("./taskmaster/routes/task");
+const taskRoute = require("./routes/task.routes");
+const userRoute = require("./routes/user.routes");
 
-dotenv.config();
-
+// const port = 3000;
+const port = process.env.PORT || 3000;
 const app = express();
+const uri = process.env.MONGO_URI;
 
+// Middleware
 const allowedOrigins = ["https://taskmaster-app-seven.vercel.app"];
 app.use(
   cors({
@@ -22,21 +26,19 @@ app.use(
   })
 );
 
-app.use(express.json()); // Parse JSON bodies
-app.use("/tasks", tasksRoute);
+app.use(express.json()); // Parse JSON requests
+
+// Routes
+app.use("/tasks", taskRoute);
+app.use("/users", userRoute);
 
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("Failed to connect to MongoDB", err));
-
-app.get("/", (req, res) => {
-  res.send("Testing my server configuration");
-});
-
-// Routes for handling authentication
-const authController = require("./taskmaster/controllers/authController");
-app.post("/register", authController.register);
-app.post("/login", authController.login);
-
-module.exports = app; // Export the app for testing
+  .connect(uri)
+  .then(() => {
+    app.listen(port, "0.0.0.0", () => {
+      console.log(`Server running on port ${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Database connection error:", error.message);
+  });

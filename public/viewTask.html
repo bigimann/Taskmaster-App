@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Manager</title>
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon" />
+    <style>
+      .me {
+        text-align: center;
+        margin: 1rem 0;
+        color: #2e7d32;
+      }
+
+      #tasksContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+
+      .task-card {
+        background-color: #e0f2f1;
+        border: 1px solid #004d40;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+      }
+
+      .task-card p {
+        font-size: 1rem;
+        margin: 0.5rem 0;
+        color: #333;
+      }
+
+      .task-card h3 {
+        color: #2e7d32;
+        margin: 0;
+        font-size: 1.4rem;
+      }
+
+      .task-card button {
+        background-color: #2e7d32;
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 5px;
+        transition: background-color 0.3s;
+      }
+
+      .task-card button:hover {
+        background-color: #388e3c;
+      }
+
+      #updateModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 500px;
+        width: 100%;
+        text-align: center;
+      }
+
+      .modal-content h3 {
+        margin: 0 0 1rem;
+        color: #2e7d32;
+      }
+
+      .modal-content form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .modal-content input,
+      .modal-content select,
+      .modal-content button {
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .modal-content button {
+        background-color: #2e7d32;
+        color: white;
+        cursor: pointer;
+      }
+
+      .modal-content button:hover {
+        background-color: #388e3c;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2 class="me">View Tasks</h2>
+    <div id="tasksContainer">Loading tasks...</div>
+
+    <!-- <div id="updateModal">
+    <div class="modal-content">
+      <h3>Update Task</h3>
+      <form id="updateForm">
+        <input type="text" id="updateTitle" placeholder="Title" required />
+        <input type="text" id="updateDescription" placeholder="Description" required />
+        <input type="date" id="updateDeadline" required />
+        <select id="updatePriority" required>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+        <button 
+        onclick="closeUpdateTaskModal()"style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 18px; cursor: pointer; color: #333;">
+        &times;
+    </button>
+        <button type="submit">Save Changes</button>
+        <button type="button" onclick="closeUpdateModal()">Cancel</button>
+      </form>
+    </div>
+  </div> -->
+
+    <div id="updateModal">
+      <div class="modal-content">
+        <h3>Update Task</h3>
+        <form id="updateForm">
+          <input type="text" id="updateTitle" placeholder="Title" required />
+          <input
+            type="text"
+            id="updateDescription"
+            placeholder="Description"
+            required
+          />
+          <input type="date" id="updateDeadline" required />
+          <select id="updatePriority" required>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+          <button
+            onclick="closeUpdateTaskModal()"
+            style="
+              position: absolute;
+              top: 10px;
+              right: 10px;
+              background: none;
+              border: none;
+              font-size: 18px;
+              cursor: pointer;
+              color: #333;
+            "
+          >
+            &times;
+          </button>
+          <button type="submit">Save Changes</button>
+          <button type="button" onclick="closeUpdateModal()">Cancel</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        let currentTaskId = null;
+
+        // Open the update modal and populate fields
+        window.openUpdateTaskModal = async (title) => {
+          try {
+            const response = await fetch(
+              `http://localhost:5000/tasks/title/${title}`
+            );
+            const task = await response.json();
+
+            if (response.status !== 200) {
+              return alert(task.message || "Task not found!");
+            }
+
+            currentTaskId = task._id;
+
+            // Populate modal fields with fetched task data
+            document.getElementById("updateTitle").value = task.title;
+            document.getElementById("updateDescription").value =
+              task.description;
+            document.getElementById("updateDeadline").value = task.deadline;
+            document.getElementById("updatePriority").value = task.priority;
+
+            // Show the update modal
+            document.getElementById("updateModal").style.display = "flex";
+          } catch (error) {
+            console.error("Error fetching task:", error);
+            alert("Error fetching task details");
+          }
+        };
+
+        // Close the update modal
+        window.closeUpdateModal = () => {
+          document.getElementById("updateModal").style.display = "none";
+        };
+
+        // Delete task (stubbed for now)
+        window.deleteTask = (title) => {
+          console.log(`Task with title "${title}" deleted!`);
+          alert(`Task "${title}" deleted!`);
+        };
+
+        // Attach event listeners to update buttons
+        function attachUpdateTaskListeners() {
+          const updateButtons = document.querySelectorAll(".update-task-btn");
+
+          updateButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+              const title = button.getAttribute("data-title"); // Get title from data attribute
+              openUpdateTaskModal(title); // Call the modal function
+            });
+          });
+        }
+
+        // Handle form submission to update a task
+        document
+          .getElementById("updateForm")
+          .addEventListener("submit", async (event) => {
+            event.preventDefault(); // Prevent default form submission
+
+            const updatedTask = {
+              title: document.getElementById("updateTitle").value,
+              description: document.getElementById("updateDescription").value,
+              deadline: document.getElementById("updateDeadline").value,
+              priority: document.getElementById("updatePriority").value,
+            };
+
+            try {
+              const response = await fetch(
+                `http://localhost:5000/tasks/${currentTaskId}`,
+                {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(updatedTask),
+                }
+              );
+
+              const result = await response.json();
+
+              if (response.status === 200) {
+                alert("Task updated successfully!");
+                closeUpdateModal(); // Close the modal after success
+                loadTasks(); // Refresh the task list
+              } else {
+                alert(result.message || "Failed to update task");
+              }
+            } catch (error) {
+              console.error("Error updating task:", error);
+              alert("Error updating task");
+            }
+          });
+
+        function loadTasks() {
+          fetch("http://localhost:5000/tasks")
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then((data) => {
+              const { tasks } = data;
+              const taskContainer = document.getElementById("tasksContainer");
+
+              taskContainer.innerHTML = ""; // Clear existing content
+
+              if (!Array.isArray(tasks) || tasks.length === 0) {
+                taskContainer.innerHTML = "<p>No tasks found.</p>"; // Show a message if no tasks
+                return;
+              }
+
+              tasks.forEach((task) => {
+                const taskElement = document.createElement("div");
+                taskElement.classList.add("task-card"); // Apply the `task-card` class
+                taskElement.innerHTML = `
+          <h3>${task.title}</h3>
+          <p>${task.description}</p>
+          <p><strong>Deadline:</strong> ${task.deadline}</p>
+          <p><strong>Priority:</strong> ${task.priority}</p>
+          <button class="update-task-btn" data-title="${task.title}">Update</button>
+          <button onclick="deleteTask('${task._id}')">Delete</button>
+        `;
+                taskContainer.appendChild(taskElement);
+              });
+
+              attachUpdateTaskListeners();
+            })
+            .catch((err) => {
+              console.error("Error loading tasks:", err);
+            });
+        }
+
+        window.deleteTask = async (taskId) => {
+          // Confirm before deleting
+          const confirmDelete = confirm(
+            "Are you sure you want to delete this task?"
+          );
+          if (!confirmDelete) return;
+
+          try {
+            // Send DELETE request to the server
+            const response = await fetch(
+              `http://localhost:5000/tasks/${taskId}`,
+              {
+                method: "DELETE",
+              }
+            );
+
+            if (response.ok) {
+              alert("Task deleted successfully!");
+              loadTasks(); // Refresh the list of tasks after deletion
+            } else {
+              const result = await response.json();
+              alert(result.message || "Failed to delete task.");
+            }
+          } catch (error) {
+            console.error("Error deleting task:", error);
+            alert("An error occurred while deleting the task.");
+          }
+        };
+
+        // Initialize tasks on DOMContentLoaded
+        document.addEventListener("DOMContentLoaded", loadTasks);
+      })();
+    </script>
+  </body>
+</html>
