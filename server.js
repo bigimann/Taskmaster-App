@@ -7,7 +7,7 @@ const taskRoute = require("./routes/task.routes");
 const userRoute = require("./routes/user.routes");
 
 // const port = 3000;
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 const app = express();
 const uri = process.env.MONGO_URI;
 
@@ -42,3 +42,7 @@ mongoose
   .catch((error) => {
     console.error("Database connection error:", error.message);
   });
+
+app.get("/", (req, res) => {
+  res.send("Hello, welcome to my API");
+});

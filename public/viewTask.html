@@ -183,7 +183,7 @@
         window.openUpdateTaskModal = async (title) => {
           try {
             const response = await fetch(
-              `http://localhost:5000/tasks/title/${title}`
+              `https://taskmaster-seven.fly.dev/tasks/title/${title}`
             );
             const task = await response.json();
 
@@ -246,7 +246,7 @@
 
             try {
               const response = await fetch(
-                `http://localhost:5000/tasks/${currentTaskId}`,
+                `https://taskmaster-seven.fly.dev/tasks/${currentTaskId}`,
                 {
                   method: "PUT",
                   headers: {
@@ -272,7 +272,7 @@
           });
 
         function loadTasks() {
-          fetch("http://localhost:5000/tasks")
+          fetch("https://taskmaster-seven.fly.dev/tasks")
             .then((response) => {
               if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -321,7 +321,7 @@
           try {
             // Send DELETE request to the server
             const response = await fetch(
-              `http://localhost:5000/tasks/${taskId}`,
+              `https://taskmaster-seven.fly.dev/tasks/${taskId}`,
               {
                 method: "DELETE",
               }

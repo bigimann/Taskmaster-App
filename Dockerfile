@@ -4,36 +4,30 @@
 ARG NODE_VERSION=20.17.0
 FROM node:${NODE_VERSION}-slim as base
 
-LABEL fly_launch_runtime="Node.js"
+LABEL fly_launch_runtime="NodeJS"
 
-# Node.js app lives here
+# Set working directory
 WORKDIR /app
 
 # Set production environment
-ENV NODE_ENV="production"
+ENV NODE_ENV=production
+# Set default port to 8080 for Fly.io
+ENV PORT=8080
 
-
-# Throw-away build stage to reduce size of final image
-FROM base as build
-
-# Install packages needed to build node modules
+# Install required packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
+    apt-get install -y python-is-python3 pkg-config build-essential && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install node modules
-COPY package-lock.json package.json ./
-RUN npm ci
+# Copy package files and install dependencies
+COPY --link package.json package-lock.json ./
+RUN npm install --production
 
 # Copy application code
-COPY . .
+COPY --link . .
 
+# Expose the port (optional, for documentation purposes)
+EXPOSE 8080
 
-# Final stage for app image
-FROM base
-
-# Copy built application
-COPY --from=build /app /app
-
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 3000
-CMD [ "node", "index.js" ]
+# Start the server
+CMD ["npm", "run", "start"]
