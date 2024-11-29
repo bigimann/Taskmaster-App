@@ -92,9 +92,8 @@
         margin-left: 0;
       }
 
-      .ham {
-        display: flex;
-        justify-content: space-between;
+      .ham-title {
+        display: none;
       }
 
       /* Responsive Design */
@@ -116,6 +115,12 @@
           margin-left: 0;
         }
 
+        .ham {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
         .ham-title {
           display: block;
         }
@@ -128,13 +133,7 @@
       <!-- Hamburger menu -->
       <div class="ham">
         <h2 class="ham-title" style="margin-bottom: 15px">
-          <span
-            style="
-              color: green;
-              font-weight: bold;
-              margin-left: 25px;
-              display: none;
-            "
+          <span style="color: green; font-weight: bold; margin-left: 25px"
             >Task</span
           >
           Master
