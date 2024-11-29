@@ -170,12 +170,7 @@
         <!-- Content Section -->
         <div class="content">
           <!-- <p>Welcome to our platform!</p> -->
-          <img
-            src="../public//images//login.png"
-            alt=""
-            width="500px"
-            height="500px"
-          />
+          <img src="images/login.png" alt="" width="500px" height="500px" />
         </div>
       </div>
     </div>
@@ -225,7 +220,7 @@
               // Save token to localStorage or a cookie
               localStorage.setItem("authToken", result.token);
               // Redirect to dashboard or homepage
-              window.location.href = "/public/index.html";
+              window.location.href = "/index.html";
             } else {
               const error = await response.json();
               alert(error.message || "Login failed!");
