@@ -124,6 +124,7 @@
           display: flex;
           justify-content: space-between;
           align-items: center;
+          background-color: orange;
         }
 
         #ham-title {
@@ -194,11 +195,16 @@
       // Sidebar toggle logic
       function toggleSidebar() {
         const hamTitle = document.getElementById("ham-title");
-
         const sidebar = document.getElementById("sidebar");
+
         sidebar.classList.toggle("visible");
 
-        hamTitle.style.display = none;
+        // Toggle hamTitle display based on sidebar visibility
+        if (sidebar.classList.contains("visible")) {
+          hamTitle.style.display = "none"; // Hide when sidebar is visible
+        } else {
+          hamTitle.style.display = "block"; // Show when sidebar is hidden
+        }
       }
 
       // Navigation logic
